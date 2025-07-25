@@ -8,11 +8,11 @@ import { Result } from "@/types";
 
 export const DiceGame = () => {
   const [alertOpen, setAlertOpen] = useState(false);
-  const [isGuessCorrect, setIsGuessCorrect] = useState(false);
+  const [currentResult, setCurrentResult] = useState<Result | null>(null);
   const [results, setResults] = useState<Result[]>([]);
 
   const handlePlay = (result: Result) => {
-    setIsGuessCorrect(result.isCorrect);
+    setCurrentResult(result);
     setAlertOpen(true);
 
     let newResults = [...results, result];
@@ -47,14 +47,21 @@ export const DiceGame = () => {
         open={alertOpen}
         autoHideDuration={2000}
         onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }} // вгорі
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
-          severity={isGuessCorrect ? "success" : "error"}
+          severity={currentResult?.isCorrect ? "success" : "error"}
           variant="filled"
-          sx={{ width: "100%" }}
+          sx={{
+            width: "600px",
+          }}
         >
-          {isGuessCorrect ? "Correct!" : "Wrong!"}
+          {currentResult?.isCorrect ? "You won!" : "You lost"}
+          {!currentResult?.isCorrect && (
+            <p>{`Number was ${
+              currentResult?.directionOver ? "lower" : "higher"
+            }`}</p>
+          )}
         </Alert>
       </Snackbar>
     </Box>
