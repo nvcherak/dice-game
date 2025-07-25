@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Skeleton,
   Slider,
   Typography,
 } from "@mui/material";
@@ -31,6 +32,7 @@ export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
   const [threshold, setThreshold] = useState(20);
   const [directionOver, setDirectionOver] = useState(false);
   const [dice, setDice] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleChangeThreshold = (event: Event, newValue: number) => {
     setThreshold(newValue);
@@ -52,6 +54,15 @@ export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
       isCorrect,
       date: new Date(),
     });
+    setIsPlaying(false);
+  };
+
+  const handlePlayWithTimeout = () => {
+    setIsPlaying(true);
+
+    setTimeout(() => {
+      handlePlay();
+    }, 1200);
   };
 
   return (
@@ -72,14 +83,15 @@ export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
           width: 320,
           height: 200,
           borderRadius: 1,
-          "&:hover": {
-            bgcolor: "rgba(0,0,0, 0.04)",
-          },
         }}
       >
-        <Typography fontSize={96} fontWeight={300}>
-          {dice}
-        </Typography>
+        {isPlaying ? (
+          <Skeleton variant="rectangular" width={320} height={200} />
+        ) : (
+          <Typography fontSize={96} fontWeight={300}>
+            {dice}
+          </Typography>
+        )}
       </Box>
 
       <Box display="flex" gap="32px" flexDirection="column">
@@ -119,7 +131,13 @@ export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
         />
       </Box>
 
-      <Button variant="contained" size="large" fullWidth onClick={handlePlay}>
+      <Button
+        variant="contained"
+        size="large"
+        fullWidth
+        onClick={handlePlayWithTimeout}
+        loading={isPlaying}
+      >
         Play
       </Button>
     </Box>
