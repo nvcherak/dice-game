@@ -1,5 +1,6 @@
 "use client";
 
+import { ChangeEvent, FC, useState } from "react";
 import {
   Box,
   Button,
@@ -10,7 +11,7 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, FC, useState } from "react";
+import { Result } from "@/types";
 
 const MARKS = [
   { value: 0, label: "0" },
@@ -23,7 +24,7 @@ const MARKS = [
 ];
 
 type DicePlayProps = {
-  onPlay: (isCorrect: boolean) => void;
+  onPlay: (result: Result) => void;
 };
 
 export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
@@ -41,12 +42,16 @@ export const DicePlay: FC<DicePlayProps> = ({ onPlay }) => {
 
   const handlePlay = () => {
     const newDice = Math.floor(Math.random() * 101);
-    const isPredictionCorrect = directionOver
-      ? newDice > threshold
-      : newDice < threshold;
+    const isCorrect = directionOver ? newDice > threshold : newDice < threshold;
 
     setDice(newDice);
-    onPlay(isPredictionCorrect);
+    onPlay({
+      dice: newDice,
+      threshold,
+      directionOver,
+      isCorrect,
+      date: new Date(),
+    });
   };
 
   return (
